@@ -1,5 +1,5 @@
 # ---- Étape 1 : dépendances de production ----
-FROM node:22-alpine AS deps
+FROM node:26-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
 # mkdir : garantit que node_modules existe même sans aucune dépendance
@@ -8,7 +8,7 @@ RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit
     && npm cache clean --force
 
 # ---- Étape 2 : image finale minimale ----
-FROM node:22-alpine AS runtime
+FROM node:26-alpine AS runtime
 ENV NODE_ENV=production \
     PORT=3000
 WORKDIR /app

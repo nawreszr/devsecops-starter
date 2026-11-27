@@ -38,12 +38,14 @@ jobs:
       - name: Build de l'image
         run: docker build -t devsecops-starter:${{ github.sha }} .
       - name: Scan Trivy (échoue si CVE HIGH/CRITICAL corrigeable)
-        uses: aquasecurity/trivy-action@0.36.0
-        with:
-          image-ref: devsecops-starter:${{ github.sha }}
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: "1"
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --exit-code 1 \
+            devsecops-starter:${{ github.sha }}
       - name: Test de santé du conteneur
         run: |
           docker run -d --name api -p 3000:3000 devsecops-starter:${{ github.sha }}

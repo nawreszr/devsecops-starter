@@ -14,7 +14,7 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -26,7 +26,7 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: semgrep scan --config auto --error src
 
   build-scan:
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, sast]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build de l'image
         run: docker build -t devsecops-starter:${{ github.sha }} .
       - name: Scan Trivy (échoue si CVE HIGH/CRITICAL corrigeable)

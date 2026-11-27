@@ -1,0 +1,14 @@
+{
+  "name": "devsecops-starter",
+  "version": "1.0.0",
+  "description": "Petite API Node.js conteneurisée avec pipeline CI/CD sécurisé (GitHub Actions, Trivy, Semgrep)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

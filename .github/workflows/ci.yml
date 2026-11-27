@@ -1,0 +1,52 @@
+name: CI/CD sécurisé
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  sast:
+    name: Analyse statique (Semgrep)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep scan --config auto --error src
+
+  build-scan:
+    name: Build Docker + scan Trivy
+    runs-on: ubuntu-latest
+    needs: [test, sast]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build de l'image
+        run: docker build -t devsecops-starter:${{ github.sha }} .
+      - name: Scan Trivy (échoue si CVE HIGH/CRITICAL corrigeable)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: devsecops-starter:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Test de santé du conteneur
+        run: |
+          docker run -d --name api -p 3000:3000 devsecops-starter:${{ github.sha }}
+          sleep 3
+          curl --fail http://127.0.0.1:3000/health
+          docker rm -f api

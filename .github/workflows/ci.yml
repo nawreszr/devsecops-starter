@@ -38,7 +38,7 @@ jobs:
       - name: Build de l'image
         run: docker build -t devsecops-starter:${{ github.sha }} .
       - name: Scan Trivy (échoue si CVE HIGH/CRITICAL corrigeable)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: devsecops-starter:${{ github.sha }}
           severity: HIGH,CRITICAL

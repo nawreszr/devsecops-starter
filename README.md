@@ -49,3 +49,11 @@ Conception de l'application, du Dockerfile, du durcissement Compose et du pipeli
 
 ## Licence
 MIT
+## Résultats
+| | Avant | Après |
+|---|---|---|
+| Vulnérabilités HIGH/CRITICAL (Trivy) | 10 | 9 |
+
+![Scan avant](docs/trivy-avant.png)
+![Scan après](docs/trivy-apres.png)
+![Pipeline](docs/pipeline-vert.png)
